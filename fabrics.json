@@ -1,0 +1,49 @@
+{
+  "version": "1.0",
+  "updated_at": "2026-05-28",
+  "base_url": "https://sdesign-fabric.netlify.app",
+  "schema": {
+    "sku": "รหัสผ้าไม่ซ้ำ ใช้ภาษาอังกฤษพิมพ์ใหญ่+ขีด เช่น DRYFIT-NAVY",
+    "name": "ชื่อแสดงผลภาษาไทย",
+    "category": "หมวดเนื้อผ้า เช่น DryFit, Mesh, Cotton, Polyester",
+    "color": "ชื่อสีภาษาอังกฤษ",
+    "color_th": "ชื่อสีภาษาไทย",
+    "color_hex": "รหัสสี HEX สำหรับ swatch",
+    "weight_gsm": "น้ำหนักผ้า กรัม/ตร.เมตร (ตัวเลข)",
+    "stretch": "ความยืดหยุ่น เช่น 4-way, 2-way, none",
+    "image": "path รูป relative เช่น fabrics/dryfit-navy.jpg",
+    "use_for": "อาเรย์ ประเภทเสื้อที่เหมาะ เช่น [jersey, polo]",
+    "tags": "อาเรย์ คำค้น เช่น [breathable, moisture-wicking]",
+    "description": "คำอธิบายสั้นๆ สำหรับลูกค้า"
+  },
+  "fabrics": [
+    {
+      "sku": "EXAMPLE-DRYFIT-NAVY",
+      "name": "ตัวอย่าง: DryFit สีกรม",
+      "category": "DryFit",
+      "color": "Navy Blue",
+      "color_th": "กรมท่า",
+      "color_hex": "#1e3a8a",
+      "weight_gsm": 140,
+      "stretch": "4-way",
+      "image": "fabrics/example-dryfit-navy.jpg",
+      "use_for": ["jersey", "polo", "training-shirt"],
+      "tags": ["breathable", "moisture-wicking", "stretchy", "sportswear"],
+      "description": "ผ้ากีฬาระบายอากาศดี ยืดได้ 4 ทิศทาง เหมาะกับเสื้อกีฬาและชุดออกกำลังกาย"
+    },
+    {
+      "sku": "EXAMPLE-MESH-BLACK",
+      "name": "ตัวอย่าง: Mesh สีดำ",
+      "category": "Mesh",
+      "color": "Black",
+      "color_th": "ดำ",
+      "color_hex": "#0a0a0a",
+      "weight_gsm": 110,
+      "stretch": "2-way",
+      "image": "fabrics/example-mesh-black.jpg",
+      "use_for": ["jersey", "training-shirt"],
+      "tags": ["breathable", "lightweight", "ventilation"],
+      "description": "ผ้าตาข่ายระบายอากาศ น้ำหนักเบา เหมาะกับเสื้อกีฬาที่ต้องการระบายความร้อนสูง"
+    }
+  ]
+}
