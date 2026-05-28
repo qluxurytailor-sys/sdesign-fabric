@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>S-DESIGN — Size Calibration / Mapping</title>
+  <style>
+    :root {
+      --bg:        #0f1419;
+      --panel:     #1a2128;
+      --panel-2:   #232c36;
+      --border:    #2e3a47;
+      --text:      #e6edf3;
+      --muted:     #8b98a5;
+      --accent:    #4cc4ff;
+      --accent-2:  #ff8c42;
+      --good:      #4caf50;
+      --warn:      #ffb84d;
+      --bad:       #ff5c5c;
+      --code-bg:   #0c1117;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Sukhumvit Set", "IBM Plex Sans Thai", Tahoma, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    header {
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #161d24, #0f1419);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    header .logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: #0f1419;
+    }
+    header h1 { font-size: 18px; margin: 0; font-weight: 600; }
+    header p  { margin: 2px 0 0; font-size: 12px; color: var(--muted); }
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 28px 64px;
+      display: grid;
+      gap: 24px;
+    }
+    .step {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+    .step h2 {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+    }
+    .step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #0f1419;
+      font-size: 12px;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+    }
+    .hint { color: var(--muted); font-size: 12px; margin: 0 0 14px; }
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .btn {
+      background: var(--panel-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn:hover { background: #2c3641; border-color: #3a4654; }
+    .btn-primary { background: var(--accent); color: #0f1419; border-color: var(--accent); font-weight: 600; }
+    .btn-primary:hover { background: #66cfff; }
+    .btn-accent { background: var(--accent-2); color: #0f1419; border-color: var(--accent-2); font-weight: 600; }
+    .btn-accent:hover { background: #ffa05c; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .drop {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      text-align: center;
+      color: var(--muted);
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+    .drop.hover { border-color: var(--accent); background: rgba(76, 196, 255, 0.06); color: var(--text); }
+    .drop strong { color: var(--text); }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .stat {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .stat label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+    .stat value { display: block; font-size: 15px; font-weight: 600; }
+
+    .size-pick {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .size-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      cursor: pointer;
+      user-select: none;
+      font-weight: 500;
+    }
+    .size-chip input { margin: 0; }
+    .size-chip.on { background: var(--accent); color: #0f1419; border-color: var(--accent); }
+    .size-chip.base { box-shadow: inset 0 0 0 1px var(--accent-2); }
+
+    .name-row { display: flex; gap: 10px; align-items: center; margin-top: 14px; }
+    .name-row input {
+      flex: 1;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13px;
+    }
+    .name-row .name-bar {
+      flex: 0 0 200px;
+      height: 8px;
+      background: var(--panel-2);
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .name-row .name-fill {
+      height: 100%;
+      background: var(--good);
+      transition: width 0.15s, background 0.15s;
+    }
+    .name-row .name-fill.warn { background: var(--warn); }
+    .name-row .name-fill.bad  { background: var(--bad); }
+    .name-row .name-len { width: 80px; text-align: right; font-variant-numeric: tabular-nums; font-size: 12px; color: var(--muted); }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card .badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    .badge.ok   { background: rgba(76, 175, 80, 0.16); color: var(--good); }
+    .badge.warn { background: rgba(255, 184, 77, 0.16); color: var(--warn); }
+    .badge.bad  { background: rgba(255, 92, 92, 0.16); color: var(--bad); }
+
+    .preview {
+      background: #0a0e13;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .issues { list-style: none; padding: 0; margin: 0 0 8px; font-size: 12px; }
+    .issues li { padding: 3px 0; color: var(--muted); display: flex; gap: 6px; align-items: flex-start; }
+    .issues li::before { content: "•"; color: var(--warn); }
+    .issues li.bad::before  { color: var(--bad); }
+    .issues li.good::before { color: var(--good); }
+
+    pre.json {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      overflow: auto;
+      max-height: 360px;
+      margin: 0;
+      font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+      font-size: 12px;
+      color: #c7d2db;
+    }
+    .pill {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    details > summary { cursor: pointer; color: var(--muted); font-size: 12px; padding: 6px 0; }
+    .hidden { display: none !important; }
+    .help { font-size: 12px; color: var(--muted); line-height: 1.7; }
+    .help code { background: var(--code-bg); padding: 1px 6px; border-radius: 4px; color: var(--accent); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">S</div>
+    <div>
+      <h1>S-DESIGN — Size Calibration / Mapping</h1>
+      <p>โปรแกรมแยกสำหรับคำนวณไซส์/วาง layout จากค่าที่วัดผ่าน Illustrator</p>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============================================================== -->
+    <section class="step" id="step-1">
+      <h2><span class="step-num">1</span> โหลด Profile JSON</h2>
+      <p class="hint">วัดค่าจาก .ai ครั้งแรกผ่าน <code style="background:var(--code-bg);padding:1px 6px;border-radius:4px;color:var(--accent);">extract-sizes.jsx</code> แล้วโหลดไฟล์ที่ได้มาตรงนี้ — ครั้งถัดไปไม่ต้องเปิด Illustrator</p>
+      <div class="drop" id="drop">
+        ลากไฟล์ <strong>.json</strong> มาวางที่นี่ หรือคลิกเพื่อเลือก
+        <input type="file" id="fileInput" accept=".json,application/json" style="display:none" />
+      </div>
+      <div class="row" style="margin-top: 14px;">
+        <button class="btn" id="loadSampleBtn">ใช้ตัวอย่าง (sample-profile.json)</button>
+        <button class="btn" id="pasteBtn">วาง JSON เอง…</button>
+        <span id="profileStatus" class="pill">ยังไม่มี profile</span>
+      </div>
+      <textarea id="pasteArea" class="hidden" style="width:100%;margin-top:10px;height:180px;background:var(--code-bg);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:8px;font-family:Consolas,monospace;font-size:12px"></textarea>
+      <div class="summary hidden" id="summary"></div>
+    </section>
+
+    <!-- ============================================================== -->
+    <section class="step hidden" id="step-2">
+      <h2><span class="step-num">2</span> เลือกไซส์ที่จะคำนวณ + กรอกชื่อนักกีฬา (ถ้ามี)</h2>
+      <p class="hint">ติ๊กไซส์ที่อยากให้ระบบคำนวณ layout ให้ — ไซส์ฐาน (base) จะมีเส้นขอบสีส้ม</p>
+      <div class="size-pick" id="sizePick"></div>
+      <div class="name-row">
+        <input id="nameInput" placeholder="ชื่อนักกีฬาบนเสื้อ (เช่น SUWANNARAT)" maxlength="40" />
+        <div class="name-bar"><div class="name-fill" id="nameFill" style="width:0%"></div></div>
+        <div class="name-len" id="nameLen">0 / 280 mm</div>
+      </div>
+      <div class="row" style="margin-top: 14px;">
+        <button class="btn btn-primary" id="calcBtn">คำนวณ Layout</button>
+        <button class="btn" id="selectAllBtn">เลือกทั้งหมด</button>
+        <button class="btn" id="selectNoneBtn">ล้าง</button>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <section class="step hidden" id="step-3">
+      <h2><span class="step-num">3</span> ผลการคำนวณ + การตัดสินใจ (decisions)</h2>
+      <p class="hint">แต่ละการ์ดคือไซส์หนึ่งใบ — preview แสดง layout, รายการด้านล่างคือสิ่งที่ระบบเสนอให้ทำตอนประกอบไฟล์ AI จริง</p>
+      <div class="results-grid" id="results"></div>
+    </section>
+
+    <!-- ============================================================== -->
+    <section class="step hidden" id="step-4">
+      <h2><span class="step-num">4</span> ส่งออก decisions JSON (ส่งต่อให้ Illustrator ประกอบไฟล์จริง)</h2>
+      <p class="hint">ไฟล์ JSON นี้คือ "คำสั่ง" ที่บอก script Illustrator ว่าแต่ละไซส์ต้องขยาย/หมุน/ย้ายอะไรบ้าง — ใช้แทนการให้ Illustrator คิด layout เอง</p>
+      <div class="row" style="margin-bottom: 12px;">
+        <button class="btn btn-accent" id="downloadBtn">ดาวน์โหลด decisions.json</button>
+        <button class="btn" id="copyBtn">คัดลอก JSON</button>
+      </div>
+      <pre class="json" id="decisionsOut"></pre>
+    </section>
+
+    <!-- ============================================================== -->
+    <section class="step">
+      <h2><span class="step-num" style="background:var(--muted)">?</span> วิธีใช้</h2>
+      <div class="help">
+        <p><strong>Workflow:</strong></p>
+        <ol style="margin: 6px 0 12px; padding-left: 22px;">
+          <li>เปิดไฟล์ .ai ของไซส์ทั้งหมดใน Illustrator → จัด layer/ชื่อชิ้นตามมาตรฐาน → File → Scripts → <code>extract-sizes.jsx</code> → ได้ไฟล์ <code>*.profile.json</code></li>
+          <li>โหลด profile JSON ในขั้นที่ 1</li>
+          <li>เลือกไซส์ + กรอกชื่อในขั้นที่ 2 → กด "คำนวณ Layout"</li>
+          <li>ตรวจผลในขั้นที่ 3 ว่ามี collision หรือต้องหมุนแขน/ขยาย artboard ไหม</li>
+          <li>โหลด decisions.json ในขั้นที่ 4 → ส่งให้ script ประกอบไฟล์ AI ต่อไป (ไม่ต้องให้ Illustrator คิด layout เอง)</li>
+        </ol>
+        <p><strong>มาตรฐานการตั้งชื่อใน Illustrator</strong> (เลือกอย่างใดอย่างหนึ่ง):</p>
+        <ul style="margin: 6px 0 12px; padding-left: 22px;">
+          <li>แบบ A: Layer ชื่อตามไซส์ <code>S</code>, <code>M</code>, <code>L</code>, <code>XL</code>, <code>2XL</code>, <code>3XL</code>, <code>4XL</code> ภายในมีชิ้นชื่อ <code>front</code>, <code>back</code>, <code>sleeveL</code>, <code>sleeveR</code>, <code>collar</code>, <code>stripe</code></li>
+          <li>แบบ B: ชื่อชิ้นตรงๆ <code>M_front</code>, <code>XL_sleeveL</code> ฯลฯ</li>
+        </ul>
+        <p><strong>หน่วย:</strong> ทุกค่าใน JSON เป็น <code>mm</code> โดย origin = มุมซ้ายบนของ artboard, Y เพิ่มลงล่าง</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+  // ====================================================================
+  // S-DESIGN Calibration — single-file logic
+  // ====================================================================
+
+  const PIECES = ["front", "back", "sleeveL", "sleeveR", "collar", "stripe"];
+  const PIECE_COLORS = {
+    front:   "#4cc4ff",
+    back:    "#66d9c4",
+    sleeveL: "#ff8c42",
+    sleeveR: "#ffb84d",
+    collar:  "#c084fc",
+    stripe:  "#94a3b8",
+  };
+
+  const state = {
+    profile: null,
+    selectedSizes: new Set(),
+    name: "",
+    decisions: null,
+  };
+
+  // ---------- DOM ----------
+  const $ = (id) => document.getElementById(id);
+  const drop = $("drop");
+  const fileInput = $("fileInput");
+
+  // ---------- Step 1: load profile ----------
+  drop.addEventListener("click", () => fileInput.click());
+  drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("hover"); });
+  drop.addEventListener("dragleave", () => drop.classList.remove("hover"));
+  drop.addEventListener("drop", (e) => {
+    e.preventDefault();
+    drop.classList.remove("hover");
+    const f = e.dataTransfer.files[0];
+    if (f) readFile(f);
+  });
+  fileInput.addEventListener("change", (e) => {
+    const f = e.target.files[0];
+    if (f) readFile(f);
+  });
+
+  function readFile(f) {
+    const r = new FileReader();
+    r.onload = (e) => loadProfileText(e.target.result, f.name);
+    r.readAsText(f);
+  }
+
+  $("loadSampleBtn").addEventListener("click", async () => {
+    try {
+      const res = await fetch("sample-profile.json");
+      if (!res.ok) throw new Error("ไม่พบ sample-profile.json ในโฟลเดอร์เดียวกัน");
+      const txt = await res.text();
+      loadProfileText(txt, "sample-profile.json");
+    } catch (err) {
+      // file:// fallback — embed sample inline
+      loadProfileText(JSON.stringify(EMBEDDED_SAMPLE, null, 2), "sample-profile.json (embedded)");
+    }
+  });
+
+  $("pasteBtn").addEventListener("click", () => {
+    const pa = $("pasteArea");
+    pa.classList.toggle("hidden");
+    if (!pa.classList.contains("hidden")) {
+      pa.focus();
+      pa.placeholder = "วาง JSON ที่นี่ แล้วคลิกนอก textarea เพื่อโหลด";
+      pa.addEventListener("blur", () => {
+        if (pa.value.trim()) loadProfileText(pa.value, "pasted");
+      }, { once: true });
+    }
+  });
+
+  function loadProfileText(text, name) {
+    try {
+      const profile = JSON.parse(text);
+      validateProfile(profile);
+      state.profile = profile;
+      $("profileStatus").textContent = "โหลดแล้ว: " + name;
+      $("profileStatus").style.color = "var(--good)";
+      renderSummary();
+      renderSizePicker();
+      $("step-2").classList.remove("hidden");
+      $("nameInput").maxLength = Math.floor((profile.nameMaxLength || 280) / 7);
+    } catch (err) {
+      alert("โหลด JSON ไม่สำเร็จ: " + err.message);
+    }
+  }
+
+  function validateProfile(p) {
+    if (!p || typeof p !== "object") throw new Error("รูปแบบไม่ถูกต้อง");
+    if (!p.sizes || typeof p.sizes !== "object") throw new Error("ไม่มี field 'sizes'");
+    if (Object.keys(p.sizes).length === 0) throw new Error("ไม่มีไซส์ใน profile");
+  }
+
+  function renderSummary() {
+    const p = state.profile;
+    const sizes = Object.keys(p.sizes);
+    const stats = [
+      ["Profile", p.profileName || "(no name)"],
+      ["Base size", p.baseSize || "—"],
+      ["จำนวนไซส์", sizes.length + " (" + sizes.join(", ") + ")"],
+      ["หน่วย", p.unit || "mm"],
+      ["Name max", (p.nameMaxLength || 280) + " mm"],
+      ["สร้างเมื่อ", (p.createdAt || "").slice(0, 10) || "—"],
+    ];
+    const html = stats.map(([l, v]) =>
+      `<div class="stat"><label>${l}</label><value>${escapeHtml(String(v))}</value></div>`
+    ).join("");
+    const sum = $("summary");
+    sum.innerHTML = html;
+    sum.classList.remove("hidden");
+  }
+
+  // ---------- Step 2: size picker ----------
+  function renderSizePicker() {
+    const p = state.profile;
+    const sizes = Object.keys(p.sizes);
+    state.selectedSizes = new Set(sizes); // default: all
+    const html = sizes.map((s) => {
+      const isBase = s === p.baseSize;
+      return `<label class="size-chip on${isBase ? " base" : ""}" data-size="${s}">
+        <input type="checkbox" checked />
+        ${s}${isBase ? " (base)" : ""}
+      </label>`;
+    }).join("");
+    const pick = $("sizePick");
+    pick.innerHTML = html;
+    pick.querySelectorAll(".size-chip").forEach((chip) => {
+      const cb = chip.querySelector("input");
+      const s = chip.dataset.size;
+      cb.addEventListener("change", () => {
+        if (cb.checked) { state.selectedSizes.add(s); chip.classList.add("on"); }
+        else { state.selectedSizes.delete(s); chip.classList.remove("on"); }
+      });
+    });
+  }
+
+  $("nameInput").addEventListener("input", (e) => {
+    state.name = e.target.value;
+    updateNameBar();
+  });
+
+  function updateNameBar() {
+    const max = state.profile?.nameMaxLength || 280;
+    // rough mm estimate: avg 7mm per uppercase Latin char at typical jersey font
+    const approxMm = state.name.length * 7;
+    const pct = Math.min(100, (approxMm / max) * 100);
+    const fill = $("nameFill");
+    fill.style.width = pct + "%";
+    fill.classList.toggle("warn", pct > 75 && pct <= 100);
+    fill.classList.toggle("bad", pct > 100);
+    $("nameLen").textContent = approxMm + " / " + max + " mm";
+  }
+
+  $("selectAllBtn").addEventListener("click", () => {
+    document.querySelectorAll("#sizePick input").forEach((cb) => {
+      if (!cb.checked) { cb.checked = true; cb.dispatchEvent(new Event("change")); }
+    });
+  });
+  $("selectNoneBtn").addEventListener("click", () => {
+    document.querySelectorAll("#sizePick input").forEach((cb) => {
+      if (cb.checked) { cb.checked = false; cb.dispatchEvent(new Event("change")); }
+    });
+  });
+
+  // ---------- Step 3: calculation engine ----------
+  $("calcBtn").addEventListener("click", () => {
+    if (state.selectedSizes.size === 0) {
+      alert("เลือกอย่างน้อย 1 ไซส์ก่อนครับ");
+      return;
+    }
+    const decisions = computeDecisions();
+    state.decisions = decisions;
+    renderResults(decisions);
+    renderDecisionsJSON(decisions);
+    $("step-3").classList.remove("hidden");
+    $("step-4").classList.remove("hidden");
+    $("step-3").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  function computeDecisions() {
+    const p = state.profile;
+    const result = {
+      profileName: p.profileName,
+      generatedAt: new Date().toISOString(),
+      name: state.name,
+      nameApproxMm: state.name.length * 7,
+      nameOverLimit: state.name.length * 7 > (p.nameMaxLength || 280),
+      decisions: {},
+    };
+    for (const size of state.selectedSizes) {
+      const src = p.sizes[size];
+      if (!src) continue;
+      result.decisions[size] = decideForSize(size, src, p);
+    }
+    return result;
+  }
+
+  function decideForSize(size, src, profile) {
+    // Start with a working copy where rotation is applied to bounds
+    const work = {};
+    for (const piece of PIECES) {
+      if (src[piece]) work[piece] = { ...src[piece] };
+    }
+    const ab = { ...src.artboard };
+
+    const actions = [];
+    const warnings = [];
+
+    // 1) Sleeve orientation: if horizontal width exceeds artboard width minus its X,
+    //    try rotating 90° (swap w/h).
+    for (const sl of ["sleeveL", "sleeveR"]) {
+      const s = work[sl];
+      if (!s) continue;
+      if (s.x + effW(s) > ab.w) {
+        // Try rotating
+        const rotated = { ...s, rotation: 90 };
+        if (s.x + effW(rotated) <= ab.w) {
+          work[sl] = rotated;
+          actions.push({ type: "rotate", piece: sl, deg: 90, reason: "แขนไม่พอแนวนอน หมุน 90° ให้ตั้ง" });
+        } else {
+          warnings.push("แขน " + sl + " ไม่พอแม้หมุน 90° แล้ว");
+        }
+      }
+    }
+
+    // 2) Required artboard
+    const req = requiredBox(work);
+    const expandW = Math.max(0, req.w - ab.w);
+    const expandH = Math.max(0, req.h - ab.h);
+    if (expandW > 0 || expandH > 0) {
+      actions.push({
+        type: "expand-artboard",
+        from: { w: ab.w, h: ab.h },
+        to:   { w: round1(ab.w + expandW), h: round1(ab.h + expandH) },
+        delta:{ w: round1(expandW), h: round1(expandH) },
+        reason: "ชิ้นเกินขอบ artboard"
+      });
+      ab.w = round1(ab.w + expandW);
+      ab.h = round1(ab.h + expandH);
+    }
+
+    // 3) Collision detection on the (possibly rotated) layout
+    const collisions = findCollisions(work);
+    for (const c of collisions) {
+      warnings.push("ชนกัน: " + c.a + " ↔ " + c.b);
+    }
+
+    // 4) Name length check
+    if (profile && state.name) {
+      const approxMm = state.name.length * 7;
+      const limit = profile.nameMaxLength || 280;
+      if (approxMm > limit) {
+        warnings.push("ชื่อยาว " + approxMm + "mm เกินขีด " + limit + "mm");
+      }
+    }
+
+    // 5) Status
+    let status = "ok";
+    if (warnings.length > 0) status = "warn";
+    if (collisions.length > 0) status = "bad";
+
+    return {
+      size,
+      status,
+      artboard: ab,
+      pieces: work,
+      actions,
+      warnings,
+      collisions: collisions.map((c) => [c.a, c.b]),
+    };
+  }
+
+  function effW(p) { return p.rotation % 180 === 0 ? p.w : p.h; }
+  function effH(p) { return p.rotation % 180 === 0 ? p.h : p.w; }
+
+  function requiredBox(pieces) {
+    let maxX = 0, maxY = 0;
+    for (const k of PIECES) {
+      const p = pieces[k];
+      if (!p) continue;
+      maxX = Math.max(maxX, p.x + effW(p));
+      maxY = Math.max(maxY, p.y + effH(p));
+    }
+    return { w: round1(maxX), h: round1(maxY) };
+  }
+
+  function findCollisions(pieces) {
+    const list = [];
+    for (const k of PIECES) {
+      if (pieces[k]) list.push({ name: k, ...pieces[k], _w: effW(pieces[k]), _h: effH(pieces[k]) });
+    }
+    const out = [];
+    for (let i = 0; i < list.length; i++) {
+      for (let j = i + 1; j < list.length; j++) {
+        if (rectOverlap(list[i], list[j])) out.push({ a: list[i].name, b: list[j].name });
+      }
+    }
+    return out;
+  }
+
+  function rectOverlap(a, b) {
+    return !(a.x + a._w <= b.x || b.x + b._w <= a.x ||
+             a.y + a._h <= b.y || b.y + b._h <= a.y);
+  }
+
+  function round1(n) { return Math.round(n * 10) / 10; }
+
+  // ---------- Step 3: render results ----------
+  function renderResults(decisions) {
+    const grid = $("results");
+    grid.innerHTML = "";
+    for (const size of Object.keys(decisions.decisions)) {
+      const d = decisions.decisions[size];
+      grid.appendChild(renderCard(d));
+    }
+  }
+
+  function renderCard(d) {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const badge = { ok: "ok", warn: "warn", bad: "bad" }[d.status];
+    const badgeText = { ok: "พร้อมประกอบ", warn: "ระวัง", bad: "ติดปัญหา" }[d.status];
+
+    const issuesHtml = [
+      ...d.actions.map((a) => {
+        if (a.type === "rotate") return `<li>หมุน <strong>${a.piece}</strong> ${a.deg}° — ${a.reason}</li>`;
+        if (a.type === "expand-artboard")
+          return `<li>ขยาย artboard ${a.from.w}×${a.from.h} → <strong>${a.to.w}×${a.to.h}</strong> (+${a.delta.w}×${a.delta.h}) — ${a.reason}</li>`;
+        return `<li>${a.type}</li>`;
+      }),
+      ...d.warnings.map((w) => `<li class="bad">${escapeHtml(w)}</li>`),
+    ].join("");
+
+    const okMsg = d.actions.length === 0 && d.warnings.length === 0
+      ? `<li class="good">layout พอดี ไม่ต้องแก้</li>`
+      : "";
+
+    card.innerHTML = `
+      <h3>
+        <span>ไซส์ ${d.size}</span>
+        <span class="badge ${badge}">${badgeText}</span>
+      </h3>
+      <div class="preview">${renderSVG(d)}</div>
+      <ul class="issues">${okMsg}${issuesHtml}</ul>
+      <details><summary>artboard ${d.artboard.w} × ${d.artboard.h} mm — ดู bounds</summary>
+        <pre class="json" style="max-height:180px;margin-top:6px">${escapeHtml(JSON.stringify(d.pieces, null, 2))}</pre>
+      </details>
+    `;
+    return card;
+  }
+
+  function renderSVG(d) {
+    const PAD = 8;
+    const W = 320;
+    const ar = d.artboard;
+    const scale = (W - PAD * 2) / Math.max(ar.w, ar.h);
+    const svgW = ar.w * scale + PAD * 2;
+    const svgH = ar.h * scale + PAD * 2;
+
+    let body = `<rect x="${PAD}" y="${PAD}" width="${ar.w * scale}" height="${ar.h * scale}"
+                  fill="#0f1419" stroke="#3a4654" stroke-dasharray="3 3" />`;
+    for (const k of PIECES) {
+      const p = d.pieces[k];
+      if (!p) continue;
+      const w = effW(p) * scale, h = effH(p) * scale;
+      const x = PAD + p.x * scale, y = PAD + p.y * scale;
+      body += `<rect x="${x}" y="${y}" width="${w}" height="${h}"
+                fill="${PIECE_COLORS[k]}22" stroke="${PIECE_COLORS[k]}" stroke-width="1.2" />
+              <text x="${x + 4}" y="${y + 14}" fill="${PIECE_COLORS[k]}" font-size="11" font-family="Consolas,monospace">${k}${p.rotation ? "↻" + p.rotation : ""}</text>`;
+    }
+    return `<svg viewBox="0 0 ${svgW} ${svgH}" width="100%" preserveAspectRatio="xMidYMid meet">${body}</svg>`;
+  }
+
+  // ---------- Step 4: export ----------
+  function renderDecisionsJSON(d) {
+    $("decisionsOut").textContent = JSON.stringify(d, null, 2);
+  }
+
+  $("downloadBtn").addEventListener("click", () => {
+    if (!state.decisions) return;
+    const blob = new Blob([JSON.stringify(state.decisions, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = (state.profile.profileName || "decisions") + ".decisions.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(a.href);
+  });
+
+  $("copyBtn").addEventListener("click", async () => {
+    if (!state.decisions) return;
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(state.decisions, null, 2));
+      $("copyBtn").textContent = "คัดลอกแล้ว";
+      setTimeout(() => { $("copyBtn").textContent = "คัดลอก JSON"; }, 1500);
+    } catch (e) {
+      alert("คัดลอกไม่สำเร็จ: " + e.message);
+    }
+  });
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]
+    );
+  }
+
+  // ---------- Embedded fallback (when running via file://) ----------
+  const EMBEDDED_SAMPLE = {
+    "$schema": "size-mapping-profile-v1",
+    "profileName": "S-DESIGN Standard Jersey",
+    "version": "1.0",
+    "createdAt": "2026-05-26T00:00:00Z",
+    "unit": "mm",
+    "baseSize": "M",
+    "nameMaxLength": 280,
+    "pieces": ["front", "back", "sleeveL", "sleeveR", "collar", "stripe"],
+    "sizes": {
+      "S":   buildSizeSample(480, 660, 220, 460, 180, 60, 1000, 1300),
+      "M":   buildSizeSample(510, 680, 230, 480, 190, 60, 1000, 1320),
+      "L":   buildSizeSample(540, 700, 240, 500, 200, 65, 1100, 1360),
+      "XL":  buildSizeSample(570, 720, 250, 520, 210, 65, 1150, 1400),
+      "2XL": buildSizeSample(600, 740, 260, 540, 220, 70, 1200, 1440),
+      "3XL": buildSizeSample(630, 760, 270, 560, 230, 70, 1250, 1480),
+      "4XL": buildSizeSample(660, 780, 280, 580, 240, 75, 1300, 1520),
+    },
+  };
+  function buildSizeSample(fw, fh, sw, sh, cw, ch, aw, ah) {
+    return {
+      artboard: { w: aw, h: ah },
+      front:    { x: 0,        y: 0,    w: fw, h: fh,    rotation: 0 },
+      back:     { x: fw + 30,  y: 0,    w: fw, h: fh+20, rotation: 0 },
+      sleeveL:  { x: 0,        y: fh+40,w: sw, h: sh,    rotation: 0 },
+      sleeveR:  { x: sw + 30,  y: fh+40,w: sw, h: sh,    rotation: 0 },
+      collar:   { x: fw + 30,  y: fh+40,w: cw, h: ch,    rotation: 0 },
+      stripe:   { x: fw + 30,  y: fh+120,w: fw, h: 30,   rotation: 0 },
+    };
+  }
+  </script>
+</body>
+</html>

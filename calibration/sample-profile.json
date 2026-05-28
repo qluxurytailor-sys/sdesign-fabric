@@ -1,0 +1,75 @@
+{
+  "$schema": "size-mapping-profile-v1",
+  "profileName": "S-DESIGN Standard Jersey",
+  "version": "1.0",
+  "createdAt": "2026-05-26T00:00:00Z",
+  "unit": "mm",
+  "baseSize": "M",
+  "nameMaxLength": 280,
+  "pieces": ["front", "back", "sleeveL", "sleeveR", "collar", "stripe"],
+  "sizes": {
+    "S": {
+      "artboard": { "w": 1000, "h": 1300 },
+      "front":    { "x": 0,   "y": 0,    "w": 480, "h": 660, "rotation": 0 },
+      "back":     { "x": 510, "y": 0,    "w": 480, "h": 680, "rotation": 0 },
+      "sleeveL":  { "x": 0,   "y": 700,  "w": 220, "h": 460, "rotation": 0 },
+      "sleeveR":  { "x": 250, "y": 700,  "w": 220, "h": 460, "rotation": 0 },
+      "collar":   { "x": 510, "y": 720,  "w": 180, "h": 60,  "rotation": 0 },
+      "stripe":   { "x": 510, "y": 800,  "w": 480, "h": 30,  "rotation": 0 }
+    },
+    "M": {
+      "artboard": { "w": 1000, "h": 1320 },
+      "front":    { "x": 0,   "y": 0,    "w": 510, "h": 680, "rotation": 0 },
+      "back":     { "x": 530, "y": 0,    "w": 510, "h": 700, "rotation": 0 },
+      "sleeveL":  { "x": 0,   "y": 720,  "w": 230, "h": 480, "rotation": 0 },
+      "sleeveR":  { "x": 260, "y": 720,  "w": 230, "h": 480, "rotation": 0 },
+      "collar":   { "x": 530, "y": 740,  "w": 190, "h": 60,  "rotation": 0 },
+      "stripe":   { "x": 530, "y": 820,  "w": 510, "h": 30,  "rotation": 0 }
+    },
+    "L": {
+      "artboard": { "w": 1100, "h": 1360 },
+      "front":    { "x": 0,   "y": 0,    "w": 540, "h": 700, "rotation": 0 },
+      "back":     { "x": 560, "y": 0,    "w": 540, "h": 720, "rotation": 0 },
+      "sleeveL":  { "x": 0,   "y": 740,  "w": 240, "h": 500, "rotation": 0 },
+      "sleeveR":  { "x": 270, "y": 740,  "w": 240, "h": 500, "rotation": 0 },
+      "collar":   { "x": 560, "y": 760,  "w": 200, "h": 65,  "rotation": 0 },
+      "stripe":   { "x": 560, "y": 845,  "w": 540, "h": 30,  "rotation": 0 }
+    },
+    "XL": {
+      "artboard": { "w": 1150, "h": 1400 },
+      "front":    { "x": 0,   "y": 0,    "w": 570, "h": 720, "rotation": 0 },
+      "back":     { "x": 590, "y": 0,    "w": 570, "h": 740, "rotation": 0 },
+      "sleeveL":  { "x": 0,   "y": 760,  "w": 250, "h": 520, "rotation": 0 },
+      "sleeveR":  { "x": 280, "y": 760,  "w": 250, "h": 520, "rotation": 0 },
+      "collar":   { "x": 590, "y": 780,  "w": 210, "h": 65,  "rotation": 0 },
+      "stripe":   { "x": 590, "y": 870,  "w": 570, "h": 30,  "rotation": 0 }
+    },
+    "2XL": {
+      "artboard": { "w": 1200, "h": 1440 },
+      "front":    { "x": 0,   "y": 0,    "w": 600, "h": 740, "rotation": 0 },
+      "back":     { "x": 620, "y": 0,    "w": 600, "h": 760, "rotation": 0 },
+      "sleeveL":  { "x": 0,   "y": 780,  "w": 260, "h": 540, "rotation": 0 },
+      "sleeveR":  { "x": 290, "y": 780,  "w": 260, "h": 540, "rotation": 0 },
+      "collar":   { "x": 620, "y": 800,  "w": 220, "h": 70,  "rotation": 0 },
+      "stripe":   { "x": 620, "y": 895,  "w": 600, "h": 30,  "rotation": 0 }
+    },
+    "3XL": {
+      "artboard": { "w": 1250, "h": 1480 },
+      "front":    { "x": 0,   "y": 0,    "w": 630, "h": 760, "rotation": 0 },
+      "back":     { "x": 650, "y": 0,    "w": 630, "h": 780, "rotation": 0 },
+      "sleeveL":  { "x": 0,   "y": 800,  "w": 270, "h": 560, "rotation": 0 },
+      "sleeveR":  { "x": 300, "y": 800,  "w": 270, "h": 560, "rotation": 0 },
+      "collar":   { "x": 650, "y": 820,  "w": 230, "h": 70,  "rotation": 0 },
+      "stripe":   { "x": 650, "y": 920,  "w": 630, "h": 30,  "rotation": 0 }
+    },
+    "4XL": {
+      "artboard": { "w": 1300, "h": 1520 },
+      "front":    { "x": 0,   "y": 0,    "w": 660, "h": 780, "rotation": 0 },
+      "back":     { "x": 680, "y": 0,    "w": 660, "h": 800, "rotation": 0 },
+      "sleeveL":  { "x": 0,   "y": 820,  "w": 280, "h": 580, "rotation": 0 },
+      "sleeveR":  { "x": 310, "y": 820,  "w": 280, "h": 580, "rotation": 0 },
+      "collar":   { "x": 680, "y": 840,  "w": 240, "h": 75,  "rotation": 0 },
+      "stripe":   { "x": 680, "y": 945,  "w": 660, "h": 30,  "rotation": 0 }
+    }
+  }
+}

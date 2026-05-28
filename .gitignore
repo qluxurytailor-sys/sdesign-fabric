@@ -1,0 +1,23 @@
+# Claude Code local config
+.claude/
+
+# Knowledge graph output (local tooling artifact)
+graphify-out/
+
+# Demo/test artifacts not part of the site
+github-vs-notebooklm-source.md
+github-vs-notebooklm-thai.mp4
+
+# OS
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+
+# Logs / temp
+*.log
+*.tmp
+node_modules/
